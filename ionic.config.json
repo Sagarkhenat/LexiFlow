@@ -1,0 +1,7 @@
+{
+  "name": "LexiFlow",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
