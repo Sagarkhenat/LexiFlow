@@ -32,7 +32,12 @@ android/
 ios/
 
 #environment/secrets
+src/environments/
 .env
+src/environments/environment.ts
+src/environments/environment.prod.ts
+
+# Sensitive credentials
 src/environments/environment.ts
 src/environments/environment.prod.ts
 

@@ -1,0 +1,35 @@
+<div class="scanner-wrapper">
+  <header class="app-header">
+    <h1 class="app-title">LexiFlow</h1>
+  </header>
+
+  <div class="viewfinder-mask">
+    <div class="cutout">
+      <div class="corner top-left"></div>
+      <div class="corner top-right"></div>
+      <div class="corner bottom-left"></div>
+      <div class="corner bottom-right"></div>
+
+      @if (store.isScanning()) {
+        <div class="scan-line"></div>
+      }
+    </div>
+  </div>
+
+  <div class="overlay-content">
+    <div class="hint-text">
+      @if (store.isProcessing()){
+        Optimizing Image...
+      } @else {
+        Align document within the frame
+      }
+    </div>
+
+    <div class="action-bar">
+      <ion-button fill="clear" class="capture-btn" (click)="onCapture()" [disabled]="store.isProcessing()">
+        <div class="inner-circle"></div>
+      </ion-button>
+    </div>
+
+  </div>
+</div>
