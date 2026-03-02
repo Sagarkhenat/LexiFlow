@@ -1,0 +1,16 @@
+@if (message) {
+  <div class="error-banner" [ngClass]="errorType">
+    <div class="icon-container">
+      @if (errorType === 'warning') {
+        <ion-icon name="scan-outline"></ion-icon>
+      } @else if (errorType === 'danger') {
+        <ion-icon name="cloud-offline-outline"></ion-icon>
+      } @else {
+        <ion-icon name="alert-circle-outline"></ion-icon>
+      }
+    </div>
+    <div class="message-text">
+      {{ message }}
+    </div>
+  </div>
+}

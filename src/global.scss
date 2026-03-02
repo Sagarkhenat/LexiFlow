@@ -25,6 +25,37 @@
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
 
+body {
+  /* Forces the content to stay within the visible screen area */
+  padding-top: var(--ion-safe-area-top);
+  padding-bottom: var(--ion-safe-area-bottom);
+}
+
+/* Senior Flex: Force transparency for the native camera layer */
+body.scanning-active {
+  background: transparent !important;
+  --ion-background-color: transparent !important;
+
+  ion-app,
+  ion-router-outlet,
+  ion-content,
+  ion-header,
+  ion-toolbar,
+  ion-tab-bar,
+  .ion-page {
+    --background: transparent !important;
+    background: transparent !important;
+
+    display: block; /* Ensure they don't collapse but stay clear */
+  }
+}
+
+// html, body, ion-app, ion-content, .ion-page {
+//   background: transparent !important;
+//   --background: transparent !important;
+//   --ion-background-color: transparent !important;
+// }
+
 /**
  * Ionic Dark Mode
  * -----------------------------------------------------

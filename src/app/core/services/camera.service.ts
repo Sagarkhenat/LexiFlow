@@ -1,48 +1,82 @@
 import { Injectable } from '@angular/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { DocumentStore } from '../../store/document.store';
+import { CameraPreview, CameraPreviewOptions,CameraPreviewPictureOptions } from '@capacitor-community/camera-preview';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LexiCameraService {
 
-  constructor() { }
+  constructor(private store: DocumentStore) { }
+
+
+  async startCameraPreview() {
+    const cameraPreviewOptions: CameraPreviewOptions = {
+      position: 'rear',
+      parent: 'cameraPreview', // ID of a container if you use one, otherwise it's fullscreen
+      toBack: true,            // This puts the camera BEHIND your HTML
+      className: 'camera-active'
+    };
+
+    try {
+      await CameraPreview.start(cameraPreviewOptions);
+      this.store.setScanning(true); // Triggers scan-line animation [cite: 113]
+    } catch (e) {
+      this.store.setError('Failed to start camera preview.');
+    }
+  }
+
+  async stopCameraPreview() {
+    await CameraPreview.stop();
+    this.store.setScanning(false);
+  }
+
+  /**
+   * Specifically for your portfolio: This ensures the native dialog
+   * pops up as soon as the scanner view is active.
+   */
+  async checkAndRequestPermissions(): Promise<boolean> {
+    try {
+      const status = await Camera.checkPermissions();
+
+      if (status.camera === 'granted') {
+        return true;
+      }
+
+      const request = await Camera.requestPermissions();
+      return request.camera === 'granted';
+    } catch (error) {
+      this.store.setError('PERMISSION_ERROR: Unable to request camera access.');
+      return false;
+    }
+  }
 
   /**
    * Captures a high-quality image and prepares it for AI processing.
    * Handles native permissions and "User Cancelled" error states.
    */
   async captureDocument() {
-    DocumentStore.setScanning(true);
+
+    console.log('Inside capture Document function :::',);
+    // 2. Use 'this.store' instead of the class name 'DocumentStore'
+    this.store.setProcessing(true);
+
+    const pictureOptions: CameraPreviewPictureOptions = {
+        quality: 90,
+        width: 1024, // Optimized for Gemini 1.5 Flash [cite: 52, 60]
+        height: 1024
+    };
 
     try {
-      const image = await Camera.getPhoto({
-        quality: 90,
-        allowEditing: false,
-        resultType: CameraResultType.Base64,
-        source: CameraSource.Prompt, // Allows user to choose between Camera or Gallery
-        width: 1024, // Optimized size for Gemini/OpenAI Vision APIs
-      });
 
-      if (image && image.base64String) {
-        DocumentStore.setScanning(false);
-        DocumentStore.setProcessing(true);
-
-        // This base64 string will be sent to your AI Processor Service next
-        return image.base64String;
-      }
-
-      throw new Error('IMAGE_CAPTURE_FAILED');
+      const result = await CameraPreview.capture(pictureOptions);
+      this.store.setProcessing(false);
+      return result.value; // This is your Base64 string
 
     } catch (error: any) {
-      // Senior Flex: Distinguishing between a "User Cancel" and a real "System Error"
-      if (error.message === 'User cancelled photos app') {
-        DocumentStore.setError(null); // No need to show an error if they just clicked 'back'
-      } else {
-        DocumentStore.setError('Failed to access camera. Please check permissions.');
-      }
-      DocumentStore.setScanning(false);
+      this.store.setError('Capture failed.');
+      this.store.setProcessing(false);
       return null;
     }
   }

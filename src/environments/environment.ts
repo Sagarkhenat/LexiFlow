@@ -3,7 +3,10 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  geminiApiKey: 'AIzaSyBxofSvMg3hrXTilGFS9Q18ROvD_0AOIz4',
+  // Replace gemini-1.5-flash with a 2026-supported model
+  geminiUrl: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent'
 };
 
 /*

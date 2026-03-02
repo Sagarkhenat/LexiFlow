@@ -1,4 +1,4 @@
-import { signal, computed } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 
 export interface ScanResult {
   id: string;
@@ -17,7 +17,6 @@ export interface DocumentState {
   error: string | null;
 }
 
-// Initial State
 const initialState: DocumentState = {
   documents: [],
   isScanning: false,
@@ -25,50 +24,46 @@ const initialState: DocumentState = {
   error: null,
 };
 
-// Define the selectors outside the main object to avoid circular references
-const _state = signal<DocumentState>(initialState);
+@Injectable({
+  providedIn: 'root' // [cite: 41, 65]
+})
+export class DocumentStore {
+  // 1. Private internal state
+  private _state = signal<DocumentState>(initialState);
 
-const documents = computed(() => _state().documents);
-const isProcessing = computed(() => _state().isProcessing);
-const error = computed(() => _state().error);
-const recentScans = computed(() =>
-  [..._state().documents].sort((a, b) => b.timestamp - a.timestamp)
-);
+  // 2. Public Read-only Selectors (Reactive)
+  public readonly documents = computed(() => this._state().documents);
+  public readonly isScanning = computed(() => this._state().isScanning);
+  public readonly isProcessing = computed(() => this._state().isProcessing);
+  public readonly error = computed(() => this._state().error);
 
-/**
- * LexiFlow Document Store
- * Manages the global state of scanned documents and AI processing status.
- */
-export const DocumentStore = {
-  // Expose the signals
-  documents,
-  isProcessing,
-  error,
-  recentScans,
+  public readonly recentScans = computed(() =>
+    [...this._state().documents].sort((a, b) => b.timestamp - a.timestamp)
+  );
 
-  // Actions
+  // 3. Methods to update state (Actions)
   setScanning(status: boolean) {
-    _state.update(state => ({ ...state, isScanning: status }));
-  },
+    this._state.update(state => ({ ...state, isScanning: status })); // [cite: 47]
+  }
 
   setProcessing(status: boolean) {
-    _state.update(state => ({ ...state, isProcessing: status, error: null }));
-  },
+    this._state.update(state => ({ ...state, isProcessing: status, error: null })); // [cite: 44]
+  }
 
   addDocument(doc: ScanResult) {
-    _state.update(state => ({
+    this._state.update(state => ({
       ...state,
       documents: [...state.documents, doc],
       isProcessing: false
     }));
-  },
+  }
 
   setError(message: string | null) {
-    _state.update(state => ({
+    this._state.update(state => ({
       ...state,
       error: message,
       isProcessing: false,
       isScanning: false
-    }));
+    })); // [cite: 44, 70]
   }
-};
+}
