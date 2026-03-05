@@ -25,7 +25,7 @@ const initialState: DocumentState = {
 };
 
 @Injectable({
-  providedIn: 'root' // [cite: 41, 65]
+  providedIn: 'root'
 })
 export class DocumentStore {
   // 1. Private internal state
@@ -43,11 +43,11 @@ export class DocumentStore {
 
   // 3. Methods to update state (Actions)
   setScanning(status: boolean) {
-    this._state.update(state => ({ ...state, isScanning: status })); // [cite: 47]
+    this._state.update(state => ({ ...state, isScanning: status }));
   }
 
   setProcessing(status: boolean) {
-    this._state.update(state => ({ ...state, isProcessing: status, error: null })); // [cite: 44]
+    this._state.update(state => ({ ...state, isProcessing: status, error: null }));
   }
 
   addDocument(doc: ScanResult) {
@@ -64,6 +64,6 @@ export class DocumentStore {
       error: message,
       isProcessing: false,
       isScanning: false
-    })); // [cite: 44, 70]
+    }));
   }
 }

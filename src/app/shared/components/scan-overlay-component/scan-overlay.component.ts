@@ -44,7 +44,7 @@ export class ScanOverlayComponent {
 
       if (analysis) {
         // Navigate to the details page or show results
-        console.log('Final Portfolio Result:', analysis);
+        console.log('Final Ai Processor Result obtained ::::', analysis);
       } else {
 
       }
