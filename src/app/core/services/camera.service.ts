@@ -12,6 +12,14 @@ export class LexiCameraService {
 
 
   async startCameraPreview() {
+
+    // 1. Always request permissions natively first
+    const hasPermission = await this.checkAndRequestPermissions();
+    if (!hasPermission) {
+      this.store.setError('Camera access is required to scan documents.');
+      return;
+    }else{}
+
     const cameraPreviewOptions: CameraPreviewOptions = {
       position: 'rear',
       parent: 'cameraPreview',

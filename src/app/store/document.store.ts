@@ -31,11 +31,20 @@ export class DocumentStore {
   // 1. Private internal state
   private _state = signal<DocumentState>(initialState);
 
-  // 2. Public Read-only Selectors (Reactive)
+  // Existing state signals
+  private _isScanning = signal<boolean>(false);
+  private _isProcessing = signal<boolean>(false);
+  private _error = signal<string | null>(null);
+
+  private _results = signal<Record<string, any> | null>(null);
+
+  // 2. Public Read-only Selectors
   public readonly documents = computed(() => this._state().documents);
   public readonly isScanning = computed(() => this._state().isScanning);
   public readonly isProcessing = computed(() => this._state().isProcessing);
   public readonly error = computed(() => this._state().error);
+
+  public results = computed(() => this._results());
 
   public readonly recentScans = computed(() =>
     [...this._state().documents].sort((a, b) => b.timestamp - a.timestamp)
@@ -65,5 +74,17 @@ export class DocumentStore {
       isProcessing: false,
       isScanning: false
     }));
+  }
+
+  public setResults(data: Record<string, any>) {
+    this._results.set(data);
+    this._error.set(null); // Clear any previous errors on success
+  }
+
+  public resetState(): void {
+    this._isScanning.set(false);
+    this._isProcessing.set(false);
+    this._error.set(null);
+    this._results.set(null);
   }
 }
