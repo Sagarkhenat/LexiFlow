@@ -1,0 +1,98 @@
+<ion-header class="ion-no-border details-header">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="discardAndScanAgain()">
+        <ion-icon name="close-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+    <ion-title class="scan-results-title">Scan Results</ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button disabled="true"></ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding details-content" [scrollY]="true">
+
+  @if (error()) {
+    <app-error-display [message]="error()"></app-error-display>
+    <ion-button expand="block" color="primary" class="ion-margin-top" (click)="discardAndScanAgain()">
+      Try Again
+    </ion-button>
+  }
+
+  @else if (results()) {
+    <div class="results-container">
+      <div class="header-text ion-margin-bottom">
+        <h2 style="font-weight: 800; font-size: 1.8rem; margin-bottom: 4px;">Document Summary</h2>
+        <p style="color: var(--ion-color-medium); margin: 0;">Intelligence Extracted Successfully</p>
+      </div>
+
+      @for (section of results() | keyvalue; track section.key) {
+        <h3 class="section-title">{{ formatKey(section.key) }}</h3>
+        <ion-card class="data-card">
+          <ion-list lines="none">
+
+            @if (isObject(section.value)) {
+              @for (field of section.value | keyvalue; track field.key) {
+                <ion-item>
+                  <ion-label class="ion-text-wrap">
+                    <p class="data-key">{{ formatKey(field.key) }}</p>
+                    <h4 class="data-value">{{ field.value }}</h4>
+                  </ion-label>
+                </ion-item>
+              }
+            }
+
+            @else if (isArray(section.value)) {
+              @for (item of section.value; track $index) {
+                <ion-item class="array-item">
+                  <ion-label class="ion-text-wrap">
+                    @if (isObject(item)) {
+                      @for (subField of item | keyvalue; track subField.key) {
+                        <p style="margin: 4px 0;">
+                          <strong style="color: var(--ion-color-medium);">{{ formatKey(subField.key) }}:</strong>
+                          <span class="data-value">{{ subField.value }}</span>
+                        </p>
+                      }
+                    } @else {
+                      <h4 class="data-value">{{ item }}</h4>
+                    }
+                  </ion-label>
+                </ion-item>
+              }
+            }
+
+            @else {
+              <ion-item>
+                <ion-label class="ion-text-wrap">
+                  <h4 class="data-value">{{ section.value }}</h4>
+                </ion-label>
+              </ion-item>
+            }
+
+          </ion-list>
+        </ion-card>
+      }
+
+      <div class="action-buttons ion-margin-top">
+        <ion-button expand="block" color="success" (click)="saveDocument()">
+          <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+          Confirm & Save
+        </ion-button>
+      </div>
+
+      <div class="bottom-spacer"></div>
+    </div>
+  }
+
+  @else {
+    <div class="empty-state ion-text-center">
+      <ion-spinner name="crescent"></ion-spinner>
+      <p>Awaiting document data...</p>
+    </div>
+  }
+
+</ion-content>

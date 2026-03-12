@@ -1,0 +1,100 @@
+.details-header {
+
+  /* Adds padding to the top of the container equal to the device's status bar */
+  padding-top: calc(var(--ion-safe-area-top) + 15px);
+
+  /* Solid background for readability */
+  background: var(--ion-background-color, #ffffff);
+
+  ion-toolbar {
+    --background: var(--ion-background-color, #ffffff);
+    /* Subtle shadow for depth */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+
+  .scan-results-title{
+    align-items: center;
+  }
+}
+
+.details-content {
+  padding-bottom: calc(var(--ion-safe-area-bottom) + 80px);
+  --background: var(--ion-color-step-50, #f4f5f8);
+  overflow-y: scroll;
+}
+
+.results-container{
+
+}
+
+/* Forces the scroll area to extend past the physical device nav bar */
+.bottom-spacer {
+  height: calc(var(--ion-safe-area-bottom, 0px) + 120px);
+  width: 100%;
+  display: block;
+}
+
+/* Protects the header from device notches/status bars */
+ion-header {
+  padding-top: var(--ion-safe-area-top, 0px);
+  background: var(--ion-background-color);
+
+  ion-toolbar {
+    --background: transparent;
+  }
+}
+
+/* Polished Typography */
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ion-color-primary);
+  margin: 24px 0 8px 8px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Adaptive Cards for Light & Dark Mode */
+.data-card {
+  margin: 0;
+  border-radius: 16px;
+  background: var(--ion-color-step-50, #f8f9fa); /* Automatically adapts */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+
+  ion-list {
+    background: transparent;
+    padding: 8px 0;
+  }
+
+  ion-item {
+    --background: transparent;
+    --min-height: 48px;
+
+    .data-key {
+      font-size: 0.85rem;
+      color: var(--ion-color-medium);
+      margin-bottom: 4px;
+    }
+
+    .data-value {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: var(--ion-text-color);
+      margin: 0;
+    }
+  }
+
+  /* Dotted divider for lists of items */
+  .array-item:not(:last-child) {
+    border-bottom: 1px dashed var(--ion-color-step-150, #e0e0e0);
+  }
+}
+
+.action-buttons {
+  margin-top: 32px;
+  ion-button {
+    --border-radius: 12px;
+    height: 54px;
+    font-weight: 600;
+  }
+}

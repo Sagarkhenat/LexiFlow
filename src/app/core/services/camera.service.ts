@@ -12,16 +12,24 @@ export class LexiCameraService {
 
 
   async startCameraPreview() {
+
+    // 1. Always request permissions natively first
+    const hasPermission = await this.checkAndRequestPermissions();
+    if (!hasPermission) {
+      this.store.setError('Camera access is required to scan documents.');
+      return;
+    }else{}
+
     const cameraPreviewOptions: CameraPreviewOptions = {
       position: 'rear',
-      parent: 'cameraPreview', // ID of a container if you use one, otherwise it's fullscreen
-      toBack: true,            // This puts the camera BEHIND your HTML
+      parent: 'cameraPreview',
+      toBack: true,
       className: 'camera-active'
     };
 
     try {
       await CameraPreview.start(cameraPreviewOptions);
-      this.store.setScanning(true); // Triggers scan-line animation [cite: 113]
+      this.store.setScanning(true); // Triggers scan-line animation
     } catch (e) {
       this.store.setError('Failed to start camera preview.');
     }
@@ -64,7 +72,7 @@ export class LexiCameraService {
 
     const pictureOptions: CameraPreviewPictureOptions = {
         quality: 90,
-        width: 1024, // Optimized for Gemini 1.5 Flash [cite: 52, 60]
+        width: 1024, // Optimized for Gemini 1.5 Flash
         height: 1024
     };
 
